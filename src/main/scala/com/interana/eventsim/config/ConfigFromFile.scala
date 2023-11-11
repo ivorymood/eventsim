@@ -4,6 +4,9 @@ import com.interana.eventsim.{Constants, State, WeightedRandomThingGenerator}
 
 import scala.collection.mutable
 import scala.io.Source
+import org.json4s.native.JsonMethods._
+import org.json4s.JsonAST.JValue
+import org.json4s.DefaultFormats
 
 /**
  *  Site configuration (loaded from JSON file, used to run simulation)
@@ -81,7 +84,8 @@ object ConfigFromFile {
 
     val s = Source.fromFile(fn)
     val rawContents = s.mkString
-    val jsonContents = (scala.util.parsing.json.JSON.parseFull(rawContents) match {
+    implicit val formats: DefaultFormats.type = DefaultFormats
+    val jsonContents = (parse(rawContents).extract[Any] match {
       case e: Some[Any] => e.get
       case _ => throw new Exception("Could not parse the state file")
     }).asInstanceOf[Map[String,Any]]

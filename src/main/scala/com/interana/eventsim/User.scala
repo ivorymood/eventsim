@@ -5,8 +5,11 @@ import java.time.{ZoneOffset, LocalDateTime}
 
 import com.fasterxml.jackson.core.{JsonEncoding, JsonFactory}
 import com.interana.eventsim.config.ConfigFromFile
+import org.json4s.native.JsonMethods._
+import org.json4s.native.Serialization.write
+import org.json4s.DefaultFormats
 
-import scala.util.parsing.json.JSONObject
+//import scala.util.parsing.json.JSONObject
 
 class User(val alpha: Double,
            val beta: Double,
@@ -77,7 +80,10 @@ class User(val alpha: Double,
         "length" -> session.currentSong.get._4
         )
 
-    val j = new JSONObject(m)
+    //val j = new JSONObject(m)
+    implicit val formats: DefaultFormats.type = DefaultFormats
+    val jsonString = write(m)
+    val j = parse(jsonString)
     j.toString()
   }
 
